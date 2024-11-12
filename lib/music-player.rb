@@ -2,46 +2,28 @@ require_relative "data-structures/doubly-linked-list"
 require_relative "data-structures/linked-list"
 require_relative "song"
 
-require 'rainbow/refinement'
 require 'taglib'
-
-using Rainbow
 
 class MusicPlayer
   attr_accessor :song_list
   
   def initialize
-    @song_list = DataStructure::DoublyLinkedList.new('2')
+    @song_list = DataStructure::DoublyLinkedList.new()
   end
 
-  def list_songs()
+  def get_song_list()
     array = []
-
     i = 0
+
     while i < @song_list.length
       array[i] = @song_list.get(i).value
       i += 1
     end
 
-    for song in array
-      puts song.value
-    end
+    return array
   end
 
-  def upload_song()
-    path = nil
-    loop do
-      puts "Specify PATH to the song:".green
-
-      path = gets().chomp
-      break if File.file?(path) && [".mp3", ".flac"].include?(File.extname(path).downcase)
-      puts "File does not exist or wrong file format.".red
-      
-      puts "Press enter to continue."
-      gets()
-      system "clear"
-    end
-    
+  def upload_song(path)
     new_song = Song.new()
     new_song.path = path
     
@@ -52,22 +34,44 @@ class MusicPlayer
       new_song.artist = tag.artist
       new_song.duration = file.audio_properties.length_in_seconds
     end
+  
+    puts "#{new_song.title} #{new_song.artist} #{new_song.duration}"
 
     @song_list.push(new_song)
+
+    puts @song_list.get(0).value.title
   end
 
-  def upload_album()
-    puts "Specify PATH to the album:\n"
-    path = gets().chomp
+  def upload_album(files, selection_list)
+    song_idx = 1
+    
+    for file in files do
+      for i in selection_list do
+        if i == song_idx
+          new_song = Song.new()
+          new_song.path = file
 
-    files = Dir.glob(path + "/*").select do | file |
-      File.file?(file) && [".mp3", ".flac"].include?(File.extname(file).downcase)
+          TagLib::MPEG::File.open(path) do | file |
+            tag = file.id3v2_tag
+            
+            new_song.title = tag.title
+            new_song.artist = tag.artist
+            new_song.duration = file.audio_properties.length_in_seconds
+          end
+
+          song_list.push(new_song)
+        end
+      end
+      song_idx += 1
     end
 
-    puts files
   end
 
   def upload_playlist()
+
+  end
+
+  def play_sequentially
     
   end
 
