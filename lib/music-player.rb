@@ -15,6 +15,14 @@ class MusicPlayer
     array = []
     i = 0
 
+    idx = 0
+    while idx < @song_list.length
+      puts @song_list.get(idx).value.inspect
+      idx += 1
+    end
+
+    puts "SKRRRR #{@song_list.length}"
+
     while i < @song_list.length
       array[i] = @song_list.get(i).value
       i += 1
@@ -34,24 +42,20 @@ class MusicPlayer
       new_song.artist = tag.artist
       new_song.duration = file.audio_properties.length_in_seconds
     end
-  
-    puts "#{new_song.title} #{new_song.artist} #{new_song.duration}"
 
     @song_list.push(new_song)
-
-    puts @song_list.get(0).value.title
   end
 
-  def upload_album(files, selection_list)
+  def upload_album(path, files, selection_list)
     song_idx = 1
-    
+
     for file in files do
       for i in selection_list do
-        if i == song_idx
+        if i.to_i == song_idx
           new_song = Song.new()
           new_song.path = file
 
-          TagLib::MPEG::File.open(path) do | file |
+          TagLib::MPEG::File.open(file) do | file |
             tag = file.id3v2_tag
             
             new_song.title = tag.title
@@ -59,7 +63,7 @@ class MusicPlayer
             new_song.duration = file.audio_properties.length_in_seconds
           end
 
-          song_list.push(new_song)
+          @song_list.push(new_song)
         end
       end
       song_idx += 1
@@ -69,6 +73,18 @@ class MusicPlayer
 
   def upload_playlist()
 
+  end
+
+  def delete_song(index)
+    @song_list.remove(index - 1)
+  end
+
+  def change_song_location(selection, location)
+    temp = @song_list.get(selection - 1).value
+    
+    @song_list.insert(location - 1, temp)
+    @song_list.remove(selection - 1)
+    
   end
 
   def play_sequentially

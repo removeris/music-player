@@ -85,13 +85,12 @@ class Menu
     case selection
     when 1
       path = input_song()
-
       @music_player.upload_song(path)
 
       puts "Song successfully added to the playlist.".green.bright
     when 2
-      files, selection_list = input_album()
-      @music_player.upload_album(files, selection_list)
+      path, files, selection_list = input_album()
+      @music_player.upload_album(path, files, selection_list)
 
       puts "Album successfully added.".green.bright
     when 3
@@ -109,46 +108,44 @@ class Menu
   def show_delete
     
     if @music_player.song_list.length == 0
-      puts "There are no songs in this playlist.".red
-      show_continue()
-      show_main()
-    end
-
-    selection = nil
-
-
-    loop do
-      puts "Select a song to delete:\n".green
-      show_song_list("#008000")
-
-      puts "Your selection: ".cyan
-      selection = gets().to_i
-
-      break if selection > 0 and selection <= @music_player.song_list.length
-
-      puts "The option you chose is unavailable.\n".red
- 
-      show_continue()
+      show_empty_list()
     end 
+
+    selection = input_deletion()
     
-    
+    @music_player.delete_song(selection)
 
     system "clear"
+
+    show_main()
   end
 
-  def show_change_location
+  def show_change_location()
+
+    if @music_player.song_list.length == 0
+      show_empty_list()
+    end 
+
+    selection, location = input_location_change()
+
+    @music_player.change_song_location(selection, location)
+
+    puts "Song location successfully changed to #{location}.".green.bright
+
+    system "clear"
+
+    show_main()
+  end
+
+  def show_sort()
     
   end
 
-  def show_sort
+  def show_play()
     
   end
 
-  def show_play
-    
-  end
-
-  def show_exit
+  def show_exit()
     puts "Exiting the program.."
     exit(true)
   end
@@ -173,7 +170,7 @@ class Menu
         show_continue()
       end
 
-      path
+      return path
   end
 
   def input_album()
@@ -220,10 +217,66 @@ class Menu
       gets()
     end
 
-    return files, selection_list
+    return path, files, selection_list
   end
 
-  def show_song_list(selected_color = "ffffff")
+  def input_location_change()
+    selection = nil
+
+    loop do
+      puts "Select a song to relocate:\n".green
+      show_song_list("#008000")
+
+      puts "Your selection: ".cyan
+      selection = gets().to_i
+
+      break if selection > 0 and selection <= @music_player.song_list.length
+
+      puts "The option you chose is unavailable.\n".red
+ 
+      show_continue()
+    end
+    system("clear")
+
+    location = nil
+
+    loop do
+      puts "Select a new location:".green
+
+      puts "Your selection: ".cyan
+      location = gets().to_i
+
+      break if selection > 0 and selection <= @music_player.song_list.length
+
+      puts "The option you chose is unavailable.\n".red
+ 
+      show_continue()
+    end
+
+    return selection, location
+  end
+
+  def input_deletion()
+    selection = nil
+
+    loop do
+      puts "Select a song to delete:\n".green
+      show_song_list("#008000")
+
+      puts "Your selection: ".cyan
+      selection = gets().to_i
+
+      break if selection > 0 and selection <= @music_player.song_list.length
+
+      puts "The option you chose is unavailable.\n".red
+ 
+      show_continue()
+    end
+
+    return selection
+  end
+
+  def show_song_list(chosen_color = "ffffff")
     array = @music_player.get_song_list
     
     i = 1
@@ -231,5 +284,11 @@ class Menu
       puts "#{i}. #{song.artist} - #{song.title}".color(chosen_color)
       i += 1
     end
+  end
+
+  def show_empty_list()
+    puts "There are no songs in this playlist.".red
+    show_continue()
+    show_main()
   end
 end
