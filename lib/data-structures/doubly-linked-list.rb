@@ -2,11 +2,10 @@ module DataStructure
   class DoublyLinkedList
     attr_accessor :head, :tail, :length
 
-    def initialize(value)
-      new_node = Node.new(value)
-      @head = new_node
-      @tail = new_node
-      @length = 1
+    def initialize()
+      @head = nil
+      @tail = nil
+      @length = 0
     end
 
     # Insert to back
@@ -143,15 +142,19 @@ module DataStructure
       return removed_node
     end
 
-  end
-
-  class Node
-    attr_accessor :value, :next, :prev
-
-    def initialize(value)
-      @value = value
-      @next = nil
-      @prev = nil
+    def clear
+      @head = nil
     end
+
+  end
+end
+
+class Node
+  attr_accessor :value, :next, :prev
+
+  def initialize(value)
+    @value = value
+    @next = nil
+    @prev = nil
   end
 end

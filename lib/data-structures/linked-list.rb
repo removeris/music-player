@@ -1,4 +1,4 @@
-module DataStructure
+module DataStructureOne
   class SinglyLinkedList
     attr_accessor :head
 
@@ -89,14 +89,14 @@ module DataStructure
     end
   end
 
-  class Node
-      
-    attr_accessor :data, :next
 
-    def initialize(data, next_node = nil)
-        @data = data
-        @next = next_node
+    class Node    
+        attr_accessor :data, :next
+
+        def initialize(data, next_node = nil)
+            @data = data
+            @next = next_node
+        end
     end
-  end
 end
 
