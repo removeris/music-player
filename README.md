@@ -26,6 +26,7 @@ Play songs:
     3. Shuffle (Albums)
 
 Create a Playlist
+
 Quit program
 
 # Backend functionality:
