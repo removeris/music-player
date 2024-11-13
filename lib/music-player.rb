@@ -74,11 +74,13 @@ class MusicPlayer
   end
 
   def change_song_location(selection, location)
-    temp = @song_list.get(selection - 1).value
-    
-    @song_list.insert(location - 1, temp)
-    @song_list.remove(selection - 1)
-    
+    selected_node = @song_list.get(selection - 1)
+    node_at_location = @song_list.get(location - 1)
+
+    temp = selected_node.value
+
+    selected_node.value = node_at_location.value
+    node_at_location.value = temp
   end
 
   def play_sequentially

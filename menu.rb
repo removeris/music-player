@@ -192,7 +192,7 @@ class Menu
         puts "Specify PATH to the song:".green
 
         path = gets().chomp
-        break if File.file?(path) && [".mp3", ".flac"].include?(File.extname(path).downcase)
+        break if File.file?(path) and [".mp3", ".flac"].include?(File.extname(path).downcase)
         
         puts "File does not exist or wrong file format.".red
         
@@ -227,7 +227,7 @@ class Menu
       selection_list = gets().chomp
 
       if selection_list == "all"
-        selection_list = (1..files.length - 1).to_a
+        selection_list = (1..files.length).to_a
 
         return path, files, selection_list
       end
@@ -253,6 +253,22 @@ class Menu
     end
 
     return path, files, selection_list
+  end
+
+  def input_playlist()
+    path = nil
+
+    loop do
+      puts "Specify PATH to the playlist:".green
+
+      path = gets().chomp
+
+      break if File.file?(path) and [".json"].include?(File.extname(path).downcase)
+
+      puts "File does not exist or wrong file format.".red
+
+      show_continue()
+    end
   end
 
   def input_location_change()

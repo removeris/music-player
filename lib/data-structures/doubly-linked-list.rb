@@ -144,6 +144,7 @@ module DataStructure
 
     def clear
       @head = nil
+      @length = 0
     end
 
     def insertion_sort(attribute)
