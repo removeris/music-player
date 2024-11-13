@@ -2,6 +2,7 @@ require_relative "data-structures/doubly-linked-list"
 require_relative "data-structures/linked-list"
 require_relative "song"
 
+require 'json'
 require 'taglib'
 
 class MusicPlayer
@@ -65,8 +66,22 @@ class MusicPlayer
 
   end
 
-  def upload_playlist()
+  def upload_playlist(path)
+    
+    @song_list.clear
 
+    file = File.read(path)
+    data_hash = JSON.parse(file)
+
+    data_hash.each do | id, data |
+      new_song = Song.new()
+
+      new_song.path = data["path"]
+      new_song.title = data["title"]
+      new_song.artist = data["artist"]
+
+      @song_list.push(new_song)
+    end
   end
 
   def delete_song(index)
@@ -93,6 +108,31 @@ class MusicPlayer
 
   def sort_by_track_number()
     @song_list.insertion_sort("track_number")
+  end
+
+  def create_playlist(name, selection_list)
+    out_file = File.new("./playlists/#{name}.json", "w+")
+
+    attribute_hash = Hash.new()
+
+    idx = 1
+    for item in selection_list do
+    
+      temp = @song_list.get(item.to_i - 1)
+
+      attribute_hash["#{idx}"] = {
+        artist: temp.value.artist,
+        title: temp.value.title,
+        path: temp.value.path
+      }
+
+      
+      idx += 1
+    end
+
+    out_file.puts(JSON.pretty_generate(attribute_hash))
+    
+    out_file.close()
   end
 
 end

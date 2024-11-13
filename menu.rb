@@ -26,12 +26,13 @@ class Menu
       3. Change Song Location\n
       4. Sort Songs\n
       5. Play Songs\n
-      6. Quit\n\n".green
+      6. Create Playlist\n
+      7. Quit\n\n".green
 
       puts "Your selection: ".cyan
 
       selection = gets().chomp.to_i
-      break if selection > 0 and selection <= 6
+      break if selection > 0 and selection <= 7
 
       puts "The option you chose is unavailable.\n".red
       
@@ -52,6 +53,8 @@ class Menu
     when 5
       show_play()
     when 6
+      show_create_playlist()
+    when 7
       show_exit
     end
 
@@ -95,7 +98,8 @@ class Menu
 
       puts "Album successfully added.".green.bright
     when 3
-      @music_player.upload_playlist()
+      path = input_playlist()
+      @music_player.upload_playlist(path)
 
       puts "Playlist successfully added.".green.bright
     when 4
@@ -166,8 +170,21 @@ class Menu
     show_main()
   end
 
-  def show_sort()
-    
+  def show_create_playlist()
+    if @music_player.song_list.length == 0
+      show_empty_list()
+    end
+
+    name, selection_list = input_playlist_creation()
+
+    puts "dab".red
+
+    @music_player.create_playlist(name, selection_list)
+
+    puts "Playlist was created successfully.".green.bright
+
+    show_continue()
+    show_main()
   end
 
   def show_play()
@@ -269,6 +286,8 @@ class Menu
 
       show_continue()
     end
+
+    return path
   end
 
   def input_location_change()
@@ -325,6 +344,45 @@ class Menu
     end
 
     return selection
+  end
+
+  def input_playlist_creation()
+    
+    selection_list = nil
+
+    loop do
+      puts "Select songs to add to your playlist:".green
+
+      show_song_list("#008000")
+
+      puts "Select songs to upload: ".cyan
+      puts "E.g. 1, 2, 4, 7 or 'all'".white.faint
+
+      selection_list = gets().chomp
+
+      selection_list = selection_list.split(",")
+
+      is_valid = true
+
+      for item in selection_list do
+        
+        item = item.to_i
+        
+        if not(item <= @music_player.song_list.length and item > 0)
+          is_valid = false
+        end
+      end
+
+      break if is_valid == true
+      
+      puts "Unable to add specified songs to the list.".red.bright
+      show_continue()
+    end
+
+    puts "Select a name for your playlist:".green
+    name = gets().chomp
+    
+    return name, selection_list
   end
 
   def show_song_list(chosen_color = "ffffff")
