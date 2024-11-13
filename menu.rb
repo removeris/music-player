@@ -9,6 +9,7 @@ class Menu
   end
 
   def start_player
+    system("clear")
     show_main()
   end
 
@@ -47,7 +48,7 @@ class Menu
     when 3
       show_change_location()
     when 4
-      show_sort()
+      show_sort_menu()
     when 5
       show_play()
     when 6
@@ -137,6 +138,34 @@ class Menu
     show_main()
   end
 
+  def show_sort_menu()
+    selection = nil
+
+    loop do
+      puts "Sort menu:\n
+      1. By artist\n
+      2. By track number\n".green
+
+      puts "Your selection: ".cyan
+      selection = gets().chomp.to_i
+
+      break if selection > 0 and selection <= 2
+
+      puts "The option you chose is unavailable.\n".red
+      
+      show_continue()
+    end
+
+    case selection
+    when 1
+      @music_player.sort_by_artist
+    when 2
+      @music_player.sort_by_track_number
+    end
+
+    show_main()
+  end
+
   def show_sort()
     
   end
@@ -174,7 +203,7 @@ class Menu
   end
 
   def input_album()
-    puts "Specify PATH to the album:\n"
+    puts "Specify PATH to the album:".green
     path = gets().chomp
 
     files = Dir.glob(path + "/*").select do | file |
@@ -193,9 +222,15 @@ class Menu
     loop do
       
       puts "Select songs to upload: ".cyan
-      puts "E.g. 1, 2, 4, 7".white.faint
+      puts "E.g. 1, 2, 4, 7 or 'all'".white.faint
       
-      selection_list = gets()
+      selection_list = gets().chomp
+
+      if selection_list == "all"
+        selection_list = (1..files.length - 1).to_a
+
+        return path, files, selection_list
+      end
 
       selection_list = selection_list.split(",")
 

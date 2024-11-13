@@ -15,14 +15,6 @@ class MusicPlayer
     array = []
     i = 0
 
-    idx = 0
-    while idx < @song_list.length
-      puts @song_list.get(idx).value.inspect
-      idx += 1
-    end
-
-    puts "SKRRRR #{@song_list.length}"
-
     while i < @song_list.length
       array[i] = @song_list.get(i).value
       i += 1
@@ -41,6 +33,7 @@ class MusicPlayer
       new_song.title = tag.title
       new_song.artist = tag.artist
       new_song.duration = file.audio_properties.length_in_seconds
+      new_song.track_number = tag.track
     end
 
     @song_list.push(new_song)
@@ -61,6 +54,7 @@ class MusicPlayer
             new_song.title = tag.title
             new_song.artist = tag.artist
             new_song.duration = file.audio_properties.length_in_seconds
+            new_song.track_number = tag.track
           end
 
           @song_list.push(new_song)
@@ -89,6 +83,14 @@ class MusicPlayer
 
   def play_sequentially
     
+  end
+
+  def sort_by_artist()
+    @song_list.insertion_sort("artist")
+  end
+
+  def sort_by_track_number()
+    @song_list.insertion_sort("track_number")
   end
 
 end

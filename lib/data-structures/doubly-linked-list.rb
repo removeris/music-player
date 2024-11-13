@@ -146,6 +146,51 @@ module DataStructure
       @head = nil
     end
 
+    def insertion_sort(attribute)
+      return if @head.nil? || @head.next.nil? 
+  
+      current = @head.next
+      while current
+        next_node = current.next  
+  
+        sorted = current.prev
+
+        if(attribute == "artist")
+          while sorted && sorted.value.artist > current.value.artist
+            sorted = sorted.prev
+          end
+        elsif(attribute == "track number")
+          while sorted && sorted.value.track_number > current.value.track_number
+            sorted = sorted.prev
+          end
+        end
+
+  
+        # Remove current node
+        if current.prev
+          current.prev.next = current.next
+        end
+        if current.next
+          current.next.prev = current.prev
+        end
+  
+        # Insert current after sorted position
+        if sorted.nil?  # Insert at the head if no sorted node is smaller
+          current.next = @head
+          @head.prev = current
+          @head = current
+          current.prev = nil
+        else  # Insert in the middle or at the end
+          current.next = sorted.next
+          sorted.next.prev = current if sorted.next
+          sorted.next = current
+          current.prev = sorted
+        end
+  
+        current = next_node
+      end
+    end
+
   end
 end
 
