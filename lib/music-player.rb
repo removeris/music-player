@@ -131,4 +131,26 @@ class MusicPlayer
     out_file.close()
   end
 
+  def shuffle_songs()
+    
+    # Convert to array
+    array = []
+    current = @song_list.head
+    while current
+      array << current.value
+      current = current.next
+    end
+
+    array.shuffle!
+
+    for item in array do
+      puts item
+    end
+
+    # Convert back to list
+    @song_list.clear
+
+    array.each { |song| @song_list.push(song) }
+  end
+
 end

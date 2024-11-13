@@ -194,10 +194,13 @@ class Menu
     end
 
     selection = input_play()
-
+    
     if(selection == 1)
       currently_playing = @music_player.song_list.head
-      
+      show_play_seq(currently_playing)
+    elsif(selection == 2)
+      @music_player.shuffle_songs()
+      currently_playing = @music_player.song_list.head
       show_play_seq(currently_playing)
     end
     
@@ -331,7 +334,7 @@ class Menu
       puts "Play menu:".green
       puts"
       1. Play Sequentially\n
-      2. Play Randomly\n
+      2. Play Randomly (Song list is shuffled)\n
       3. Return To Main Menu".green
     
       puts "Your selection:\n".cyan
