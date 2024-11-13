@@ -37,7 +37,4 @@ Program only accepts .mp3/.flac files
 
 Folder's files are saved in a singly-linked list
 
-
 # Upload is implemented through specifying a PATH to local resource
-!The specified path must be valid!
-
