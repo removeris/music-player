@@ -17,6 +17,8 @@ class Menu
     
     selection = nil
 
+    system("clear")
+
     loop do
       puts " " * 5 + "Music player\n".magenta
 
@@ -51,7 +53,7 @@ class Menu
     when 4
       show_sort_menu()
     when 5
-      show_play()
+      show_play_menu()
     when 6
       show_create_playlist()
     when 7
@@ -177,8 +179,6 @@ class Menu
 
     name, selection_list = input_playlist_creation()
 
-    puts "dab".red
-
     @music_player.create_playlist(name, selection_list)
 
     puts "Playlist was created successfully.".green.bright
@@ -187,8 +187,60 @@ class Menu
     show_main()
   end
 
-  def show_play()
+  def show_play_menu()
     
+    if @music_player.song_list.length == 0
+      show_empty_list()
+    end
+
+    selection = input_play()
+
+    if(selection == 1)
+      currently_playing = @music_player.song_list.head
+      
+      show_play_seq(currently_playing)
+    end
+    
+  end
+
+  def show_play_seq(currently_playing)
+    
+    command = nil
+    
+    loop do
+      system("clear")
+      puts "Playlist:".green  
+      show_song_list("#008000", currently_playing)
+
+      puts "\nEnter 'next' or 'prev' to move between songs or 'exit' to return to menu:".cyan
+      command = gets().chomp
+
+      break if command == "next" or command == 'prev' or command == "exit"
+
+      puts "The option you selected is unavailable.".red
+      show_continue()
+    end
+
+    case command
+    when "next"
+      if(currently_playing.next != nil)
+        currently_playing = currently_playing.next
+      else
+        puts "You've reached the end of the playlist.".red
+        show_continue()
+      end
+    when "prev"
+      if(currently_playing.prev != nil)
+        currently_playing = currently_playing.prev
+      else
+        puts "This is the first song.".red
+        show_continue()
+      end
+    when "exit"
+      show_main()
+    end
+
+    show_play_seq(currently_playing)
   end
 
   def show_exit()
@@ -272,22 +324,52 @@ class Menu
     return path, files, selection_list
   end
 
-  def input_playlist()
-    path = nil
+  def input_play()
+    selection = nil
 
     loop do
-      puts "Specify PATH to the playlist:".green
+      puts "Play menu:".green
+      puts"
+      1. Play Sequentially\n
+      2. Play Randomly\n
+      3. Return To Main Menu".green
+    
+      puts "Your selection:\n".cyan
 
-      path = gets().chomp
+      selection = gets().chomp.to_i
 
-      break if File.file?(path) and [".json"].include?(File.extname(path).downcase)
+      break if selection > 0 and selection <= 3
+
+      puts "The option you chose is unavailable.".red
+      show_continue()
+    end
+
+    if selection == 3
+      show_main()
+    end
+
+    return selection
+  end
+
+  def input_playlist()
+    file = nil
+
+    loop do
+      puts "Specify playlist file name:".green
+      puts "E.g. house-playlist".white.faint
+
+      file = gets().chomp
+
+      file = "./playlists/#{file}.json"
+
+      break if File.file?(file) and [".json"].include?(File.extname(file).downcase)
 
       puts "File does not exist or wrong file format.".red
 
       show_continue()
     end
 
-    return path
+    return file
   end
 
   def input_location_change()
@@ -385,12 +467,18 @@ class Menu
     return name, selection_list
   end
 
-  def show_song_list(chosen_color = "ffffff")
+  def show_song_list(chosen_color = "ffffff", currently_playing = nil)
     array = @music_player.get_song_list
     
     i = 1
     for song in array
-      puts "#{i}. #{song.artist} - #{song.title}".color(chosen_color)
+
+      if currently_playing and currently_playing.value == song
+        puts "#{i}. #{song.artist} - #{song.title}".color("#00ff00").bright
+      else
+        puts "#{i}. #{song.artist} - #{song.title}".color(chosen_color)
+      end
+
       i += 1
     end
   end

@@ -98,10 +98,6 @@ class MusicPlayer
     node_at_location.value = temp
   end
 
-  def play_sequentially
-    
-  end
-
   def sort_by_artist()
     @song_list.insertion_sort("artist")
   end
