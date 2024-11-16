@@ -4,13 +4,12 @@ Music Player
 # Song List:
 Implemented through a doubly-linked list
 
-
 # User functionality:
 
 Upload songs:
-    1. Single song upload
-    2. Album upload (Folder)
-    3. Playlist
+    1. Single song upload [through PATH]
+    2. Album upload (Folder) [through PATH]
+    3. Playlist [playlist file name in playlists folder]
 
 Delete songs
 
@@ -23,7 +22,6 @@ Sort list by:
 Play songs:
     1. Sequentially
     2. Randomly
-    3. Shuffle (Albums)
 
 Create a Playlist
 
@@ -34,7 +32,3 @@ Quit program
 Saving and Reading User created playlists 
 
 Program only accepts .mp3/.flac files
-
-Folder's files are saved in a singly-linked list
-
-# Upload is implemented through specifying a PATH to local resource
