@@ -1,0 +1,17 @@
+{
+  "1": {
+    "artist": "Artist",
+    "title": "Title",
+    "path": "/PATH/"
+  },
+  "2": {
+    "artist": "Artist",
+    "title": "Title",
+    "path": "/PATH/"
+  },
+  "3": {
+    "artist": "Artist",
+    "title": "Title",
+    "path": "/PATH/"
+  }
+}
